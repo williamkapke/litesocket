@@ -1,0 +1,28 @@
+{
+  "name": "litesocket",
+  "version": "0.8.3",
+  "description": "Realtime server events for Node.JS, using Server Sent Events (SSE)",
+  "main": "litesocket.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/williamwicks/litesocket.git"
+  },
+  "keywords": [
+    "connect",
+    "express",
+    "sse",
+    "middleware",
+    "eventsource"
+  ],
+  "author": "William Wicks",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/williamwicks/SSE/issues"
+  },
+  "dependencies": {
+    "debug": "~0"
+  }
+}
