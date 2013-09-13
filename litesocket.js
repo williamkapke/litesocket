@@ -2,6 +2,7 @@ var debug = require("debug")("litesocket");
 
 litesocket = module.exports = function(req, res, next){
 	debug("connection opened");
+	res.useChunkedEncodingByDefault = false;
 	res.writeHead(200, litesocket.headers(req));
 	["sendRetry","sendComment","sendData"].forEach(function(name){
 		var fn = litesocket[name];
@@ -37,8 +38,7 @@ litesocket.headers = function(res){
 	return {
 		"Access-Control-Allow-Origin": "*",
 		"Content-Type":"text/event-stream",
-		"Cache-Control":"no-cache",
-		"Connection":"keep-alive"
+		"Cache-Control":"no-cache"
 	};
 }
 litesocket.sendId = function(stream, id){
