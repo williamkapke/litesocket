@@ -14,14 +14,17 @@ litesocket = module.exports = function(req, res, next){
 	};
 
 	//send something or the browser gets mad!
-	res.sendComment(litesocket.welcome);
+	res.send(litesocket.welcome);
 
 	//very important to remove it from the pool and kill off the default 2 minute timeout
-	req.socket.setTimeout(0);
-	req.socket.emit("agentRemove");
-	req.on('close', function(){
-		debug("connection closed");
-	});
+	res.socket.setTimeout(0);
+	res.socket.emit("agentRemove");
+
+	if(debug.enabled){
+		res.on('end', function closed(){
+			debug("response closed");
+		});
+	}
 
 	next();
 };
