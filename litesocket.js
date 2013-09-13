@@ -66,13 +66,16 @@ litesocket.sendComment = function(stream, comment){
 	stream.write('\n');
 };
 litesocket.sendData = function(stream, data){
-	data = String(data).replace(/\n(?=.)/g, '\ndata: ');
 	stream.write("data:");
-	debug(data);
-	stream.write(data);
-	if(/\n\r?\n\r?$/.test(data))//the data already has the terminating \n\n at the end
-		return;
-	stream.write(/\n\r?$/.test(data)? '\n':'\n\n');
+	if(data){
+		data = String(data).replace(/\n(?=.)/g, '\ndata: ');
+		debug(data);
+		stream.write(data);
+		var ending = /(\r\n|\r|\n)(\r\n|\r|\n)?$/.exec(data);
+		if(ending && ending[2])//the data already has the terminating \n\n at the end
+			return;
+	}
+	stream.write(!ending? '\n\n' : '\n');
 };
 litesocket.send = function(stream, data, options){
 	if(options){
@@ -89,6 +92,5 @@ litesocket.send = function(stream, data, options){
 			litesocket.sendEvent(stream, options.event);
 		}
 	}
-	if(data)
-		litesocket.sendData(stream, data);
+	litesocket.sendData(stream, data);
 };
