@@ -1,4 +1,5 @@
 var debug = require("debug")("litesocket");
+var version = require(__dirname+'/package.json').version;
 
 litesocket = module.exports = function(req, res, next){
 	debug("connection opened");
@@ -15,7 +16,7 @@ litesocket = module.exports = function(req, res, next){
 	};
 
 	//send something or the browser gets mad!
-	res.send(litesocket.welcome);
+	res.send(litesocket.welcome, {comment:litesocket.banner});
 
 	//very important to remove it from the pool and kill off the default 2 minute timeout
 	res.socket.setTimeout(0);
@@ -27,13 +28,14 @@ litesocket = module.exports = function(req, res, next){
 		});
 	}
 
-	next();
+	if(next) next();
 };
 litesocket.handler = function(url, callback){
 	this.get(url, litesocket, callback);
 };
 
-litesocket.welcome = "You are connected";
+litesocket.banner = "Connected via litesocket v"+ version +"\nhttp://npmjs.org/package/litesocket";
+litesocket.welcome = '{"connected":true}';
 litesocket.headers = function(res){
 	return {
 		"Access-Control-Allow-Origin": "*",
@@ -67,15 +69,10 @@ litesocket.sendComment = function(stream, comment){
 };
 litesocket.sendData = function(stream, data){
 	stream.write("data:");
-	if(data){
-		data = String(data).replace(/\n(?=.)/g, '\ndata: ');
-		debug(data);
-		stream.write(data);
-		var ending = /(\r\n|\r|\n)(\r\n|\r|\n)?$/.exec(data);
-		if(ending && ending[2])//the data already has the terminating \n\n at the end
-			return;
-	}
-	stream.write(!ending? '\n\n' : '\n');
+	data = String(data).replace(/\n(?=.)/g, '\ndata: ');
+	debug("data", data);
+	stream.write(data);
+	stream.write('\n');
 };
 litesocket.send = function(stream, data, options){
 	if(options){
@@ -85,12 +82,13 @@ litesocket.send = function(stream, data, options){
 		if(options.retry){
 			litesocket.sendRetry(stream, options.retry);
 		}
-		if(options.id){
-			litesocket.sendId(stream, options.id);
-		}
 		if(options.event){
 			litesocket.sendEvent(stream, options.event);
 		}
 	}
 	litesocket.sendData(stream, data);
+	if(options && options.id){
+		litesocket.sendId(stream, options.id);
+	}
+	stream.write('\n\n');
 };

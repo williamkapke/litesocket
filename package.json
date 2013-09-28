@@ -1,6 +1,6 @@
 {
   "name": "litesocket",
-  "version": "0.8.4",
+  "version": "0.9.1",
   "description": "Realtime server events for Node.JS, using Server Sent Events (SSE)",
   "main": "litesocket.js",
   "scripts": {
