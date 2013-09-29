@@ -97,5 +97,5 @@ litesocket.send = function(stream, data, options){
 	if(options && options.id){
 		litesocket.sendId(stream, options.id);
 	}
-	stream.write('\n\n');
+	stream.write('\n');
 };
