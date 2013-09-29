@@ -1,7 +1,7 @@
 var debug = require("debug")("litesocket");
 var version = require(__dirname+'/package.json').version;
 
-litesocket = module.exports = function(req, res, next){
+var litesocket = module.exports = function(req, res, next){
 	debug("connection opened");
 	res.useChunkedEncodingByDefault = false;
 	res.writeHead(200, litesocket.headers(req));
