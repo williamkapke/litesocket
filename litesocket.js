@@ -29,7 +29,14 @@ var litesocket = module.exports = function(req, res, next){
 	}
 
 	if(next) next();
+
+	if(!isNaN(litesocket.ping) && litesocket.ping>0)
+		setTimeout(ping.bind(res), litesocket.ping);
 };
+function ping(){
+	this.sendComment('ping');
+	setTimeout(ping.bind(this), litesocket.ping);
+}
 litesocket.handler = function(url, callback){
 	this.get(url, litesocket, callback);
 };
